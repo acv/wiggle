@@ -50,7 +50,6 @@
  * If l == 0, there is no match.
  */
 
-#include	<malloc.h>
 #include	<ctype.h>
 #include	<stdlib.h>
 #include	"wiggle.h"
@@ -367,6 +366,11 @@ static void remap(struct best *best, int cnt,
 			pa--;
 		while (pb>0 && is_skipped(b2.list[pb-1]))
 			pb--;
+
+		if (pa <= 0)
+			pa = 1;
+		if (pb <= 0)
+			pb = 1;
 
 #if 0
 		printf("-> %d,%d\n", pa,pb);
