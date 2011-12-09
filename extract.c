@@ -16,8 +16,8 @@
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *    along with this program; if not, write to the Free Software Foundation, Inc.,
+ *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *    Author: Neil Brown
  *    Email: <neilb@suse.de>
@@ -36,7 +36,8 @@ static void skip_eol(char **cp, char *end)
 	char *c = *cp;
 	while (c < end && *c != '\n')
 		c++;
-	if (c < end) c++;
+	if (c < end)
+		c++;
 	*cp = c;
 }
 
@@ -56,11 +57,11 @@ static void copyline(struct stream *s, char **cp, char *end)
 int split_patch(struct stream f, struct stream *f1, struct stream *f2)
 {
 	struct stream r1, r2;
-	int chunks=0;
+	int chunks = 0;
 	char *cp, *end;
 	int state = 0;
-	int acnt=0, bcnt=0;
-	int a,b,c,d;
+	int acnt = 0, bcnt = 0;
+	int a, b, c, d;
 	int lineno = 0;
 	char before[100], after[100];
 
@@ -83,9 +84,9 @@ int split_patch(struct stream f, struct stream *f1, struct stream *f2)
 		 *   3   unified
 		 */
 		lineno++;
-		switch(state) {
+		switch (state) {
 		case 0:
-			if (sscanf(cp, "@@ -%s +%s @@", before, after)==2) {
+			if (sscanf(cp, "@@ -%s +%s @@", before, after) == 2) {
 				int ok = 1;
 				if (sscanf(before, "%d,%d", &a, &b) == 2)
 					acnt = b;
@@ -104,53 +105,55 @@ int split_patch(struct stream f, struct stream *f1, struct stream *f2)
 					state = 3;
 				else
 					state = 0;
-			} else if (sscanf(cp, "*** %d,%d ****", &a, &b)==2) {
+			} else if (sscanf(cp, "*** %d,%d ****", &a, &b) == 2) {
 				acnt = b-a+1;
 				state = 1;
-			} else if (sscanf(cp, "--- %d,%d ----", &c, &d)==2) {
+			} else if (sscanf(cp, "--- %d,%d ----", &c, &d) == 2) {
 				bcnt = d-c+1;
 				state = 2;
 			}
 			skip_eol(&cp, end);
-			if (state==1 || state == 3) {
+			if (state == 1 || state == 3) {
 				char buf[20];
 				buf[0] = 0;
 				chunks++;
 				sprintf(buf+1, "%5d %5d %5d\n", chunks, a, acnt);
-				memcpy(r1.body+r1.len, buf, 19);
-				r1.len += 19;
+				memcpy(r1.body+r1.len, buf, 20);
+				r1.len += 20;
 			}
-			if (state==2 || state == 3) {
+			if (state == 2 || state == 3) {
 				char buf[20];
 				buf[0] = 0;
 				sprintf(buf+1, "%5d %5d %5d\n", chunks, c, bcnt);
-				memcpy(r2.body+r2.len, buf, 19);
-				r2.len += 19;
+				memcpy(r2.body+r2.len, buf, 20);
+				r2.len += 20;
 			}
 			break;
 		case 1:
-			if ((*cp == ' ' || *cp=='!' || *cp == '-' || *cp == '+')
+			if ((*cp == ' ' || *cp == '!' || *cp == '-' || *cp == '+')
 			    && cp[1] == ' ') {
-				cp+=2;
+				cp += 2;
 				copyline(&r1, &cp, end);
 				acnt--;
 				if (acnt == 0)
 					state = 0;
 			} else {
-				fprintf(stderr, "wiggle: bad context patch at line %d\n", lineno);
+				fprintf(stderr, "%s: bad context patch at line %d\n",
+					Cmd, lineno);
 				return 0;
 			}
 			break;
 		case 2:
-			if ((*cp == ' ' || *cp=='!' || *cp == '-' || *cp == '+')
+			if ((*cp == ' ' || *cp == '!' || *cp == '-' || *cp == '+')
 			    && cp[1] == ' ') {
-				cp+= 2;
+				cp += 2;
 				copyline(&r2, &cp, end);
 				bcnt--;
 				if (bcnt == 0)
 					state = 0;
 			} else {
-				fprintf(stderr, "wiggle: bad context patch/2 at line %d\n", lineno);
+				fprintf(stderr, "%s: bad context patch/2 at line %d\n",
+					Cmd, lineno);
 				return 0;
 			}
 			break;
@@ -171,7 +174,8 @@ int split_patch(struct stream f, struct stream *f1, struct stream *f2)
 				copyline(&r2, &cp, end);
 				bcnt--;
 			} else {
-				fprintf(stderr, "wiggle: bad unified patch at line %d\n", lineno);
+				fprintf(stderr, "%s: bad unified patch at line %d\n",
+					Cmd, lineno);
 				return 0;
 			}
 			if (acnt <= 0 && bcnt <= 0)
@@ -194,7 +198,7 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 	int lineno;
 	int state = 0;
 	char *cp, *end;
-	struct stream r1,r2,r3;
+	struct stream r1, r2, r3;
 	f1->body = NULL;
 	f2->body = NULL;
 
@@ -219,10 +223,10 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 		 */
 		int len = end-cp;
 		lineno++;
-		switch(state) {
+		switch (state) {
 		case 0:
-			if (len>=8 &&
-			    strncmp(cp, "<<<<<<<", 7)==0 &&
+			if (len >= 8 &&
+			    strncmp(cp, "<<<<<<<", 7) == 0 &&
 			    (cp[7] == ' ' || cp[7] == '\n')
 				) {
 				char *peek;
@@ -255,7 +259,7 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 					skip_eol(&peek, end);
 				}
 			} else {
-				char *cp2= cp;
+				char *cp2 = cp;
 				copyline(&r1, &cp2, end);
 				cp2 = cp;
 				copyline(&r2, &cp2, end);
@@ -263,8 +267,8 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 			}
 			break;
 		case 1:
-			if (len>=8 &&
-			    strncmp(cp, "|||||||", 7)==0 &&
+			if (len >= 8 &&
+			    strncmp(cp, "|||||||", 7) == 0 &&
 			    (cp[7] == ' ' || cp[7] == '\n')
 				) {
 				state = 2;
@@ -273,8 +277,8 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 				copyline(&r1, &cp, end);
 			break;
 		case 2:
-			if (len>=8 &&
-			    strncmp(cp, "=======", 7)==0 &&
+			if (len >= 8 &&
+			    strncmp(cp, "=======", 7) == 0 &&
 			    (cp[7] == ' ' || cp[7] == '\n')
 				) {
 				state = 3;
@@ -283,8 +287,8 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 				copyline(&r2, &cp, end);
 			break;
 		case 3:
-			if (len>=8 &&
-			    strncmp(cp, ">>>>>>>", 7)==0 &&
+			if (len >= 8 &&
+			    strncmp(cp, ">>>>>>>", 7) == 0 &&
 			    (cp[7] == ' ' || cp[7] == '\n')
 				) {
 				state = 0;
@@ -293,8 +297,8 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 				copyline(&r3, &cp, end);
 			break;
 		case 4:
-			if (len>=8 &&
-			    strncmp(cp, "=======", 7)==0 &&
+			if (len >= 8 &&
+			    strncmp(cp, "=======", 7) == 0 &&
 			    (cp[7] == ' ' || cp[7] == '\n')
 				) {
 				state = 5;
@@ -303,8 +307,8 @@ int split_merge(struct stream f, struct stream *f1, struct stream *f2, struct st
 				copyline(&r2, &cp, end);
 			break;
 		case 5:
-			if (len>=8 &&
-			    strncmp(cp, ">>>>>>>", 7)==0 &&
+			if (len >= 8 &&
+			    strncmp(cp, ">>>>>>>", 7) == 0 &&
 			    (cp[7] == ' ' || cp[7] == '\n')
 				) {
 				state = 0;

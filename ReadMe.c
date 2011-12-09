@@ -16,8 +16,8 @@
  *    GNU General Public License for more details.
  *
  *    You should have received a copy of the GNU General Public License
- *    along with this program; if not, write to the Free Software
- *    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *    along with this program; if not, write to the Free Software Foundation, Inc.,
+ *    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  *    Author: Neil Brown
  *    Email: <neilb@suse.de>
@@ -31,8 +31,8 @@
 
 char Version[] = "wiggle 0.8 2010-03-24 GPL-2+ http://neil.brown.name/wiggle/\n";
 
-char short_options1[]="xdmwlrhi123pVRvqB"; /* not mode B */
-char short_options2[]="xdmwlrhi123p::VRvqB"; /* mode B */
+char short_options1[] = "xdmwlrhi123pVRvqB"; /* not mode B */
+char short_options2[] = "xdmwlrhi123p::VRvqB"; /* mode B */
 
 
 struct option long_options[] = {
@@ -60,7 +60,7 @@ char Usage[] =
 char Help[] =  "\n"
 "Wiggle - apply patches that 'patch' rejects.\n"
 "\n"
-"Wiggle provides three distinct but related functions:\n"
+"Wiggle provides four distinct but related functions:\n"
 "merge, diff, extract, and browse.\n"
 "To get more detailed help on a function, select the function\n"
 "before requesting help.  e.g.\n"
@@ -95,7 +95,7 @@ char Help[] =  "\n"
 char HelpExtract[] = "\n"
 "wiggle --extract -[123] [--patch]  merge-or-patch\n"
 "\n"
-"The extract function allows one banch of a patch or merge file\n"
+"The extract function allows one branch of a patch or merge file\n"
 "to be extracted.  A 'patch' is the output of 'diff -c' or 'diff -u'.\n"
 "Either the before (-1) or after (-2) branch can be extracted.\n"
 "\n"
@@ -121,7 +121,7 @@ char HelpDiff[] = "\n"
 "second is treated as a patch and the first or (with -2) second branch\n"
 "is extracted and compared against the first file.\n"
 "\n"
-"--reverse (-R) with cause diff two swap the two files before comparing\n"
+"--reverse (-R) with cause diff to swap the two files before comparing\n"
 "them.\n"
 "\n";
 
@@ -135,7 +135,7 @@ char HelpMerge[] = "\n"
 "output unresolvable conflicts in the resulting merge by showing\n"
 "whole-line differences.\n"
 "With the --lines option, the files are compared line-wise much\n"
-"like 'merge'.  With the --words option, files are compared\n"
+"like 'merge'.  With the (default) --words option, files are compared\n"
 "word-wise and unresolvable conflicts are reported word-wise.\n"
 "\n"
 "If --merge is given one file, it is treated as a merge (merge -A\n"
